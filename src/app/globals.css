@@ -1,2 +1,7 @@
 @import "tailwindcss";
-@import "@heroui/styles"; 
+@import "@heroui/styles";
+
+@theme {
+  --color-teal: #0f766e;
+  --color-sunset: #f97316;
+}
