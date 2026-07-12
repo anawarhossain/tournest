@@ -1,7 +1,9 @@
-
+import { Button } from "@heroui/react";
 
 export default function Home() {
   return (
-    <div>Home</div>
+    <div>
+      <Button variant="danger-soft">Danger Soft</Button>
+    </div>
   );
 }
