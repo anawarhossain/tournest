@@ -1,11 +1,14 @@
-export default function AddPackagePlaceholder() {
+import PackageForm from "@/components/packages/PackageForm";
+
+export default function AddPackagePage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-2xl font-bold">Add Package (placeholder)</h1>
-      <p className="text-slate-500 mt-2">
-        This route is protected by middleware. Reaching this page means you are logged in.
-        The real form is built in Phase 5.
+    <div className="max-w-3xl mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold text-neutral-900">Add a New Package</h1>
+      <p className="text-neutral-500 text-sm mt-1 mb-8">
+        Fill in the details below to publish a new tour package.
       </p>
+
+      <PackageForm mode="create" />
     </div>
   );
 }
