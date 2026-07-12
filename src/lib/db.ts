@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
+// const dbName = process.env.DATABASE_NAME as string;
 
 if (!MONGODB_URI) {
   throw new Error(
@@ -34,7 +35,7 @@ async function connectDB() {
 
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(MONGODB_URI, { bufferCommands: false })
+      .connect(MONGODB_URI, { bufferCommands: false, dbName: process.env.DATABASE_NAME })
       .then((mongoose) => mongoose);
   }
 
