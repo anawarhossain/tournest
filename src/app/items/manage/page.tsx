@@ -139,7 +139,7 @@ export default function ManagePackagesPage() {
                       className="h-12 w-16 rounded-lg object-cover bg-neutral-100"
                     />
                   </td>
-                  <td className="px-4 py-3 font-medium text-neutral-800 max-w-[220px] truncate">
+                  <td className="px-4 py-3 font-medium text-neutral-800 max-w-55 truncate">
                     {pkg.title}
                   </td>
                   <td className="px-4 py-3 text-neutral-600">
