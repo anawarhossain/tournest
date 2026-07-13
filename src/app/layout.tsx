@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toast } from "@heroui/react";
 import QueryProvider from "@/providers/QueryProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -10,16 +11,22 @@ export const metadata: Metadata = {
     "Browse, publish, and book tour & travel packages across Bangladesh — Cox's Bazar, Sundarban, Sylhet, and more.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className="light" data-theme="light">
-      {/* No HeroUIProvider needed — HeroUI v3 is provider-less by design */}
+      {/* No HeroUIProvider needed — HeroUI v3 is provider-less by design.
+          Toast.Provider is the one exception; it renders the toast region. */}
       <body className="min-h-screen bg-background text-foreground antialiased">
         <QueryProvider>
           <Navbar />
           <main>{children}</main>
           <Footer />
         </QueryProvider>
+        <Toast.Provider placement="top end" />
       </body>
     </html>
   );

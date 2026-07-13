@@ -9,6 +9,7 @@ import ConfirmModal from "@/components/ui/ConfirmModal";
 import PackagePerformanceChart from "@/components/packages/PackagePerformanceChart";
 import { formatBDT } from "@/lib/utils";
 import type { MyPackageRow } from "@/app/api/packages/mine/route";
+import { toast } from "@heroui/react";
 
 function SkeletonRow() {
   return (
@@ -42,11 +43,16 @@ export default function ManagePackagesPage() {
 
   async function confirmDelete() {
     if (!toDelete) return;
+    const title = toDelete.title;
     try {
       await deleteMutation.mutateAsync(toDelete._id);
       setToDelete(null);
-    } catch {
-      // error is surfaced via deleteMutation.isError below; keep modal open so the user sees it
+      toast.success(`"${title}" was deleted.`);
+    } catch (err) {
+      // Also surfaced inline via deleteMutation.isError below; modal stays open so the user sees it.
+      toast.danger(
+        err instanceof Error ? err.message : "Failed to delete package.",
+      );
     }
   }
 

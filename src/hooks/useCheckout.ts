@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "@heroui/react";
 import type { ApiResponse } from "@/types";
 
 async function startCheckout(packageId: string): Promise<string> {
@@ -23,6 +24,11 @@ export function useCheckout() {
     mutationFn: startCheckout,
     onSuccess: (url) => {
       window.location.href = url;
+    },
+    onError: (err) => {
+      toast.danger(
+        err instanceof Error ? err.message : "Failed to start checkout.",
+      );
     },
   });
 }

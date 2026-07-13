@@ -7,6 +7,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { loginSchema, type LoginInput } from "@/schemas/auth.schema";
 import { signIn } from "@/lib/auth-client";
+import { toast } from "@heroui/react";
 
 const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "";
 const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD || "";
@@ -35,13 +36,19 @@ function LoginForm() {
 
   async function doLogin(values: LoginInput) {
     setServerError(null);
-    const { error } = await signIn.email({ email: values.email, password: values.password });
+    const { error } = await signIn.email({
+      email: values.email,
+      password: values.password,
+    });
 
     if (error) {
-      setServerError(error.message || "Invalid email or password.");
+      const message = error.message || "Invalid email or password.";
+      setServerError(message);
+      toast.danger(message);
       return;
     }
 
+    toast.success("Welcome back!");
     router.push(returnUrl);
     router.refresh();
   }
@@ -51,16 +58,21 @@ function LoginForm() {
     setValue("password", DEMO_PASSWORD);
     setDemoLoading(true);
     setServerError(null);
-    const { error } = await signIn.email({ email: DEMO_EMAIL, password: DEMO_PASSWORD });
+    const { error } = await signIn.email({
+      email: DEMO_EMAIL,
+      password: DEMO_PASSWORD,
+    });
     setDemoLoading(false);
 
     if (error) {
-      setServerError(
-        "Demo account not found yet. Seed it first (see testing guide) or register manually with these credentials."
-      );
+      const message =
+        "Demo account not found yet. Seed it first (see testing guide) or register manually with these credentials.";
+      setServerError(message);
+      toast.danger(message);
       return;
     }
 
+    toast.success("Welcome back!");
     router.push(returnUrl);
     router.refresh();
   }
@@ -68,7 +80,9 @@ function LoginForm() {
   return (
     <div className="max-w-md mx-auto px-4 py-16">
       <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
-      <p className="text-slate-500 mb-6 text-sm">Log in to manage and book tour packages.</p>
+      <p className="text-slate-500 mb-6 text-sm">
+        Log in to manage and book tour packages.
+      </p>
 
       <button
         type="button"
@@ -88,14 +102,28 @@ function LoginForm() {
       <form onSubmit={handleSubmit(doLogin)} className="space-y-4" noValidate>
         <div>
           <label className="block text-sm font-medium mb-1">Email</label>
-          <input type="email" {...register("email")} className="w-full rounded-xl border border-slate-300 px-3 py-2" />
-          {errors.email && <p className="text-sunset text-xs mt-1">{errors.email.message}</p>}
+          <input
+            type="email"
+            {...register("email")}
+            className="w-full rounded-xl border border-slate-300 px-3 py-2"
+          />
+          {errors.email && (
+            <p className="text-sunset text-xs mt-1">{errors.email.message}</p>
+          )}
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1">Password</label>
-          <input type="password" {...register("password")} className="w-full rounded-xl border border-slate-300 px-3 py-2" />
-          {errors.password && <p className="text-sunset text-xs mt-1">{errors.password.message}</p>}
+          <input
+            type="password"
+            {...register("password")}
+            className="w-full rounded-xl border border-slate-300 px-3 py-2"
+          />
+          {errors.password && (
+            <p className="text-sunset text-xs mt-1">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
         {serverError && <p className="text-sunset text-sm">{serverError}</p>}
@@ -111,7 +139,10 @@ function LoginForm() {
 
       <p className="mt-6 text-sm text-slate-500 text-center">
         Don&apos;t have an account?{" "}
-        <Link href={`/register?returnUrl=${encodeURIComponent(returnUrl)}`} className="text-teal font-medium">
+        <Link
+          href={`/register?returnUrl=${encodeURIComponent(returnUrl)}`}
+          className="text-teal font-medium"
+        >
           Register
         </Link>
       </p>

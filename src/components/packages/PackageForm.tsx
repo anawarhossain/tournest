@@ -5,10 +5,15 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import type { z } from "zod";
-import { packageSchema, type PackageInput, packageCategoryEnum } from "@/schemas/package.schema";
+import {
+  packageSchema,
+  type PackageInput,
+  packageCategoryEnum,
+} from "@/schemas/package.schema";
 import DynamicListInput from "./DynamicListInput";
 import ImageUploader from "./ImageUploader";
 import type { ApiResponse, IPackage } from "@/types";
+import { toast } from "@heroui/react";
 
 // packageSchema uses z.coerce.number()/z.coerce.date(), so the raw form shape
 // (before validation) differs from the validated output shape (PackageInput).
@@ -30,14 +35,20 @@ const EMPTY_DEFAULTS: PackageFormInput = {
   location: "",
   // Native <input type="date"> needs a "YYYY-MM-DD" string, not a Date object —
   // zod's z.coerce.date() converts this string to a real Date at submit time.
-  departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+  departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10),
   duration: "",
   category: "Beach",
   images: [],
   specifications: { included: [], excluded: [], itinerary: [] },
 };
 
-export default function PackageForm({ mode, packageId, defaultValues }: PackageFormProps) {
+export default function PackageForm({
+  mode,
+  packageId,
+  defaultValues,
+}: PackageFormProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -54,7 +65,8 @@ export default function PackageForm({ mode, packageId, defaultValues }: PackageF
   async function onSubmit(values: PackageInput) {
     setServerError(null);
 
-    const url = mode === "create" ? "/api/packages" : `/api/packages/${packageId}`;
+    const url =
+      mode === "create" ? "/api/packages" : `/api/packages/${packageId}`;
     const method = mode === "create" ? "POST" : "PATCH";
 
     try {
@@ -66,14 +78,23 @@ export default function PackageForm({ mode, packageId, defaultValues }: PackageF
       const json: ApiResponse<IPackage> = await res.json();
 
       if (!res.ok || !json.success) {
-        setServerError(json.message || "Something went wrong. Please try again.");
+        const message =
+          json.message || "Something went wrong. Please try again.";
+        setServerError(message);
+        toast.danger(message);
         return;
       }
 
+      toast.success(
+        mode === "create" ? "Package published!" : "Package updated!",
+      );
       router.push("/items/manage");
       router.refresh();
     } catch {
-      setServerError("Network error — please check your connection and try again.");
+      const message =
+        "Network error — please check your connection and try again.";
+      setServerError(message);
+      toast.danger(message);
     }
   }
 
@@ -82,58 +103,86 @@ export default function PackageForm({ mode, packageId, defaultValues }: PackageF
       {/* Basic info */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="sm:col-span-2">
-          <label className="block text-sm font-medium mb-1 text-neutral-800">Title</label>
+          <label className="block text-sm font-medium mb-1 text-neutral-800">
+            Title
+          </label>
           <input
             {...register("title")}
             placeholder="e.g. Cox's Bazar 3D2N Package"
             className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm"
           />
-          {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+          {errors.title && (
+            <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
+          )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1 text-neutral-800">Price (৳ BDT)</label>
+          <label className="block text-sm font-medium mb-1 text-neutral-800">
+            Price (৳ BDT)
+          </label>
           <input
             type="number"
             step="1"
             {...register("price", { valueAsNumber: true })}
             className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm"
           />
-          {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>}
+          {errors.price && (
+            <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
+          )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1 text-neutral-800">Location</label>
+          <label className="block text-sm font-medium mb-1 text-neutral-800">
+            Location
+          </label>
           <input
             {...register("location")}
             placeholder="e.g. Cox's Bazar"
             className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm"
           />
-          {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location.message}</p>}
+          {errors.location && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.location.message}
+            </p>
+          )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1 text-neutral-800">Departure Date</label>
+          <label className="block text-sm font-medium mb-1 text-neutral-800">
+            Departure Date
+          </label>
           <input
             type="date"
             {...register("departureDate")}
             className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm"
           />
-          {errors.departureDate && <p className="text-red-500 text-xs mt-1">{errors.departureDate.message}</p>}
+          {errors.departureDate && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.departureDate.message}
+            </p>
+          )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1 text-neutral-800">Duration</label>
+          <label className="block text-sm font-medium mb-1 text-neutral-800">
+            Duration
+          </label>
           <input
             {...register("duration")}
             placeholder="e.g. 3 Days 2 Nights"
             className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm"
           />
-          {errors.duration && <p className="text-red-500 text-xs mt-1">{errors.duration.message}</p>}
+          {errors.duration && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.duration.message}
+            </p>
+          )}
         </div>
 
         <div className="sm:col-span-2">
-          <label className="block text-sm font-medium mb-1 text-neutral-800">Category</label>
+          <label className="block text-sm font-medium mb-1 text-neutral-800">
+            Category
+          </label>
           <select
             {...register("category")}
             className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm bg-white"
@@ -144,40 +193,62 @@ export default function PackageForm({ mode, packageId, defaultValues }: PackageF
               </option>
             ))}
           </select>
-          {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>}
+          {errors.category && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.category.message}
+            </p>
+          )}
         </div>
       </div>
 
       {/* Descriptions */}
       <div>
-        <label className="block text-sm font-medium mb-1 text-neutral-800">Short Description</label>
+        <label className="block text-sm font-medium mb-1 text-neutral-800">
+          Short Description
+        </label>
         <textarea
           {...register("shortDescription")}
           rows={2}
           placeholder="One or two sentences shown on package cards"
           className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm"
         />
-        {errors.shortDescription && <p className="text-red-500 text-xs mt-1">{errors.shortDescription.message}</p>}
+        {errors.shortDescription && (
+          <p className="text-red-500 text-xs mt-1">
+            {errors.shortDescription.message}
+          </p>
+        )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1 text-neutral-800">Full Description</label>
+        <label className="block text-sm font-medium mb-1 text-neutral-800">
+          Full Description
+        </label>
         <textarea
           {...register("fullDescription")}
           rows={6}
           placeholder="Full details shown on the package's detail page"
           className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm"
         />
-        {errors.fullDescription && <p className="text-red-500 text-xs mt-1">{errors.fullDescription.message}</p>}
+        {errors.fullDescription && (
+          <p className="text-red-500 text-xs mt-1">
+            {errors.fullDescription.message}
+          </p>
+        )}
       </div>
 
       {/* Images */}
       <Controller
         control={control}
         name="images"
-        render={({ field }) => <ImageUploader value={field.value} onChange={field.onChange} />}
+        render={({ field }) => (
+          <ImageUploader value={field.value} onChange={field.onChange} />
+        )}
       />
-      {errors.images && <p className="text-red-500 text-xs -mt-4">{errors.images.message as string}</p>}
+      {errors.images && (
+        <p className="text-red-500 text-xs -mt-4">
+          {errors.images.message as string}
+        </p>
+      )}
 
       {/* Specifications */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 border-t border-neutral-200">

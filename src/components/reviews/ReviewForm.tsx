@@ -7,6 +7,7 @@ import { FaStar } from "react-icons/fa6";
 import type { z } from "zod";
 import { reviewSchema, type ReviewInput } from "@/schemas/review.schema";
 import { useCreateReview } from "@/hooks/useReviews";
+import { toast } from "@heroui/react";
 
 // reviewSchema uses z.coerce.number() for rating, so the raw form shape differs
 // from the validated output shape (ReviewInput) — same pattern as PackageForm.
@@ -36,8 +37,12 @@ export default function ReviewForm({ packageId }: ReviewFormProps) {
       await createReview.mutateAsync(values);
       reset({ rating: 5, comment: "" });
       setSubmitted(true);
-    } catch {
-      // surfaced via createReview.isError below
+      toast.success("Review submitted — thanks for sharing!");
+    } catch (err) {
+      // Also surfaced inline via createReview.isError below.
+      toast.danger(
+        err instanceof Error ? err.message : "Failed to submit review.",
+      );
     }
   }
 
@@ -52,7 +57,9 @@ export default function ReviewForm({ packageId }: ReviewFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
       <div>
-        <label className="block text-sm font-medium mb-1 text-neutral-800">Your Rating</label>
+        <label className="block text-sm font-medium mb-1 text-neutral-800">
+          Your Rating
+        </label>
         <Controller
           control={control}
           name="rating"
@@ -66,29 +73,44 @@ export default function ReviewForm({ packageId }: ReviewFormProps) {
                   aria-label={`${star} star${star > 1 ? "s" : ""}`}
                   className="p-0.5"
                 >
-                  <FaStar size={22} className={star <= (field.value as number) ? "text-yellow-400" : "text-neutral-200"} />
+                  <FaStar
+                    size={22}
+                    className={
+                      star <= (field.value as number)
+                        ? "text-yellow-400"
+                        : "text-neutral-200"
+                    }
+                  />
                 </button>
               ))}
             </div>
           )}
         />
-        {errors.rating && <p className="text-red-500 text-xs mt-1">{errors.rating.message}</p>}
+        {errors.rating && (
+          <p className="text-red-500 text-xs mt-1">{errors.rating.message}</p>
+        )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1 text-neutral-800">Your Review</label>
+        <label className="block text-sm font-medium mb-1 text-neutral-800">
+          Your Review
+        </label>
         <textarea
           {...register("comment")}
           rows={3}
           placeholder="Share your experience with this tour…"
           className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm"
         />
-        {errors.comment && <p className="text-red-500 text-xs mt-1">{errors.comment.message}</p>}
+        {errors.comment && (
+          <p className="text-red-500 text-xs mt-1">{errors.comment.message}</p>
+        )}
       </div>
 
       {createReview.isError && (
         <p className="text-red-500 text-sm">
-          {createReview.error instanceof Error ? createReview.error.message : "Failed to submit review."}
+          {createReview.error instanceof Error
+            ? createReview.error.message
+            : "Failed to submit review."}
         </p>
       )}
 

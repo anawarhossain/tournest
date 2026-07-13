@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaPaperPlane } from "react-icons/fa6";
-import { newsletterSchema, type NewsletterInput } from "@/schemas/contact.schema";
+import {
+  newsletterSchema,
+  type NewsletterInput,
+} from "@/schemas/contact.schema";
+import { toast } from "@heroui/react";
 
 export default function Newsletter() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -27,10 +31,15 @@ export default function Newsletter() {
       const json = await res.json();
       if (res.ok && json.success) {
         setSuccessMessage(json.message || "Subscribed!");
+        toast.success(json.message || "Subscribed!");
         reset();
+      } else {
+        toast.danger(json.message || "Failed to subscribe. Please try again.");
       }
     } catch {
-      // silently ignore — form stays as-is, user can retry
+      toast.danger(
+        "Network error — please check your connection and try again.",
+      );
     }
   }
 
@@ -39,10 +48,15 @@ export default function Newsletter() {
       <div className="max-w-2xl mx-auto px-4 text-center">
         <h2 className="text-2xl font-bold text-white">Never Miss a Trip</h2>
         <p className="text-neutral-400 text-sm mt-2">
-          Subscribe for new tour packages and exclusive offers straight to your inbox.
+          Subscribe for new tour packages and exclusive offers straight to your
+          inbox.
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 flex flex-col sm:flex-row gap-3" noValidate>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-6 flex flex-col sm:flex-row gap-3"
+          noValidate
+        >
           <div className="flex-1">
             <input
               type="email"
@@ -50,7 +64,11 @@ export default function Newsletter() {
               placeholder="you@example.com"
               className="w-full rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-teal/50"
             />
-            {errors.email && <p className="text-red-400 text-xs mt-1 text-left">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-400 text-xs mt-1 text-left">
+                {errors.email.message}
+              </p>
+            )}
           </div>
           <button
             type="submit"
@@ -62,7 +80,9 @@ export default function Newsletter() {
           </button>
         </form>
 
-        {successMessage && <p className="mt-3 text-sm text-teal-300">{successMessage}</p>}
+        {successMessage && (
+          <p className="mt-3 text-sm text-teal-300">{successMessage}</p>
+        )}
       </div>
     </section>
   );
