@@ -10,7 +10,7 @@ interface PackageCardProps {
 export default function PackageCard({ pkg }: PackageCardProps) {
   return (
     <div className="rounded-xl border border-neutral-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-      <div className="aspect-[4/3] bg-neutral-100">
+      <div className="aspect-4/3 bg-neutral-100">
         {/* eslint-disable-next-line @next/next/no-img-element -- Cloudinary URL, next/image adds no value here */}
         <img src={pkg.images[0]} alt={pkg.title} className="h-full w-full object-cover" />
       </div>
