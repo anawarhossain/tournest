@@ -1,10 +1,25 @@
+import Hero from "@/components/home/Hero";
+import FeaturedPackages from "@/components/home/FeaturedPackages";
+import Categories from "@/components/home/Categories";
+import WhyChooseUs from "@/components/home/WhyChooseUs";
+import Statistics from "@/components/home/Statistics";
+import Testimonials from "@/components/home/Testimonials";
+import Newsletter from "@/components/home/Newsletter";
+import FAQ from "@/components/home/FAQ";
+import CTA from "@/components/home/CTA";
+
 export default function HomePage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-24 text-center">
-      <h1 className="text-3xl font-bold text-teal">TourNest</h1>
-      <p className="mt-3 text-slate-600">
-        Home page placeholder — built in Phase 10. Use the navbar to test Login / Register (Phase 2).
-      </p>
-    </div>
+    <>
+      <Hero />
+      <FeaturedPackages />
+      <Categories />
+      <WhyChooseUs />
+      <Statistics />
+      <Testimonials />
+      <Newsletter />
+      <FAQ />
+      <CTA />
+    </>
   );
 }
