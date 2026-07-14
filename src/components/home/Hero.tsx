@@ -51,7 +51,7 @@ export default function Hero() {
   const slide = SLIDES[activeIndex];
 
   return (
-    <section className={`relative h-[65vh] min-h-[480px] bg-gradient-to-br ${slide.gradient} transition-colors duration-700`}>
+    <section className={`relative h-[65vh] min-h-120 bg-linear-to-br ${slide.gradient} transition-colors duration-700`}>
       <div className="absolute inset-0 bg-black/20" />
 
       <div className="relative h-full max-w-4xl mx-auto px-4 flex flex-col items-center justify-center text-center">

@@ -2,13 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
 // Routes that require a logged-in user (Requirements §2 / §4).
-const PROTECTED_PREFIXES = ["/items/add", "/items/manage", "/items/edit", "/booking", "/bookings"];
+const PROTECTED_PREFIXES = [
+  "/items/add",
+  "/items/manage",
+  "/items/edit",
+  "/booking",
+  "/bookings",
+  "/profile",
+];
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   const isProtected = PROTECTED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 
   if (!isProtected) return NextResponse.next();
@@ -29,5 +36,10 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/items/:path*", "/booking/:path*", "/bookings/:path*"],
+  matcher: [
+    "/items/:path*",
+    "/booking/:path*",
+    "/bookings/:path*",
+    "/profile/:path*",
+  ],
 };
