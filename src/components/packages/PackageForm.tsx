@@ -251,7 +251,7 @@ export default function PackageForm({
       )}
 
       {/* Specifications */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 border-t border-neutral-200">
+      <div className="grid grid-cols-1  gap-6 pt-2 border-t border-neutral-200">
         <Controller
           control={control}
           name="specifications.included"
