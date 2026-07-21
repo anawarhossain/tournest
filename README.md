@@ -323,3 +323,25 @@ See **[`DEPLOYMENT.md`](./DEPLOYMENT.md)** for the full step-by-step Vercel depl
 
 This project was built as a learning/assignment project. No license is specified — add one (e.g. MIT) if you plan to distribute or open-source it.
 
+
+## 👨‍💻 Author
+**Md Anawar Hossain**
+- **GitHub:** [@anawarhossain](https://github.com/anawarhossain)
+- **Facebook:** [Anawar Hossain](https://web.facebook.com/AnawarHossain55)
+- **LinkeIn:** [Anawar Hossain](https://www.linkedin.com/in/anawarhossain/)
+- **X(Twitter):** [Anawar Hossain](https://x.com/MDANAWAR22)
+- **WhatsApp:** [Anawar Hossain](https://wa.me/+8801701020694)
+- **Role:** Junior Developer
+
+
+## Live Link
+
+- [Live Link](https://anawarhossain-tournest.vercel.app/)
+
+## Project Screenshot
+
+<p align="center">
+  <img src="public/preview.png" alt="Project Preview" width=" ">
+</p>
+
+
